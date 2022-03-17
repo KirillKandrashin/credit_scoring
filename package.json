@@ -2,6 +2,8 @@
   "name": "credit_scoring",
   "version": "1.0.0",
   "dependencies": {
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "mongodb": "^4.4.1",
+    "nodemon": "^2.0.15"
   }
 }
