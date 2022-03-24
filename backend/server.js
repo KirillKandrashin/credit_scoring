@@ -2,6 +2,9 @@ const express = require('express');
 const MongoClient = require("mongodb").MongoClient;
 const app = express();
 const port = 3000;
+const request = require('request');  //отправка http-запросов на сторонние сервисы
+const rp = require('request-promise');
+const cheerio = require('cheerio');
 var server = require('http').createServer(app);
 
 app.use(
@@ -17,23 +20,43 @@ app.get('/scoring', function (req, res){
 });
 
 app.post('/scoring', (req, res)=>{
+    var options = {
+        method: 'post',
+        uri: 'http://localhost:8081/python',
+        body: req.body,
+        json: true
+    }
+    rp(options)
+        .then(function (parsedBody){
+            console.log(parsedBody)
+        })
+        .catch(function (err){
+            console.log(err)
+        })
+
+    // request('http://localhost:8081/hello', (err, response, body)=>{
+    //     if(err) return res.status(500).send({message:err})
+    //     console.log(body)
+    //})
+
+
     //console.log(req.body);
 
-    const url = "mongodb://localhost:3001";
-    const client = new MongoClient(url);
-    client.connect(function (err, client){
-        const db = client.db('clients');
-        const collection = db.collection('info')
-        let clientInformation = req.body;
-        collection.insertOne(clientInformation, function (err, result){
-            if (err){
-                return console.log(err);
-            }
-            console.log(result);
-            console.log(clientInformation);
-            client.close();
-        });
-    });
+    // const url = "mongodb://localhost:3001";
+    // const client = new MongoClient(url);
+    // client.connect(function (err, client){
+    //     const db = client.db('clients');
+    //     const collection = db.collection('info')
+    //     let clientInformation = req.body;
+    //     collection.insertOne(clientInformation, function (err, result){
+    //         if (err){
+    //             return console.log(err);
+    //         }
+    //         console.log(result);
+    //         console.log(clientInformation);
+    //         client.close();
+    //     });
+    // });
 
 
     let scoring = 0.0
